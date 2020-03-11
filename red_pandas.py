@@ -1,6 +1,7 @@
 import pandas as pd
+import pyperclip
 
-
+from tabulate import tabulate
 
 # custom series object to keep slice and dice consistent
 
@@ -19,6 +20,28 @@ class RedPandasFrame(pd.DataFrame):
     def _constructor_sliced(self):
         return RedPandasSeries
 
+
+    # implement public the methods
+    def save_groupby(self, grp_dims, **kwargs):
+        ''' A groupby replacing None with 'nan' to not accidentally drop groups with None '''
+        return sgroupby(self, grp_dims, **kwargs)
+
+    def pareto(self, variable, value, **kwargs):
+        ''' Pareto plot of a given variable (x-axis) and value (y-axis) '''
+        return pareto_plot(self, variable, value, **kwargs)
+
+    def sankey(self, left, right, mass):
+        return sankey_plot(self, left, right, mass)
+
+    def boxplot(self, grp_dims, value_cols, **kwargs):
+        ''' Boxplot of value_cols (one or multiple) provided a group dim (one or multiple) TODO: what is the aggregation (sum... but others possible)'''
+        return box_whisker_plot(self, grp_dims, value_cols, **kwargs)
+
+    def to_markdown(
+        self, n: Optional[int] = 10, **kwargs
+    ) -> Optional[None]:
+        ''' Copy a markdown presentation of the first n rows to the clipboard buidling on tabulate'''
+        pyperclip.copy(tabulate(self.loc[:n, :], headers='keys', tabletfmt='pipe', **kwargs))
 
 
 
