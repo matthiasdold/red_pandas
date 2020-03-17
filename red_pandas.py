@@ -2,11 +2,10 @@ import pandas as pd
 import pyperclip
 
 from tabulate import tabulate
+from source.plotting import pareto_plot, sankey_plot, box_whisker_plot
+from source.save_transforms import sgroupby
 
 # custom series object to keep slice and dice consistent
-
-
-
 class RedPandasFrame(pd.DataFrame):
     '''
     RedPandas Data Frame main class as a wrapper around pandas.DataFrames enhancing basic functionality
@@ -38,8 +37,8 @@ class RedPandasFrame(pd.DataFrame):
         return box_whisker_plot(self, grp_dims, value_cols, **kwargs)
 
     def to_markdown(
-        self, n: Optional[int] = 10, **kwargs
-    ) -> Optional[None]:
+        self, n = 10, **kwargs
+    ) -> str:
         ''' Copy a markdown presentation of the first n rows to the clipboard buidling on tabulate'''
         pyperclip.copy(tabulate(self.loc[:n, :], headers='keys', tabletfmt='pipe', **kwargs))
 
@@ -55,8 +54,8 @@ class RedPandasSeries(pd.Series):
         return RedPandasSeries
 
     def to_markdown(
-        self, n: Optional[int] = 10, **kwargs
-    ) -> Optional[str]:
+        self, n = 10, **kwargs
+    ) -> str:
         '''
         Copy a markdown string representation of the series first n lines
         :param n: number of lines to consider

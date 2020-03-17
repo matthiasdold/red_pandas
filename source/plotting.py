@@ -39,7 +39,7 @@ def pareto_plot(df, variable: str, value: str) -> plt.figure:
 
     return fig
 
-def sankey_plto(df, left: str, right: str, mass: float) -> plt.axis:
+def sankey_plot(df, left: str, right: str, mass: float) -> plt.axis:
     '''
 
     :param df: red_pandas data frame
@@ -133,7 +133,7 @@ def box_whisker_plot(df, grp_dims: list, value_cols: list, violin=False) -> plt.
     return fig
 
 
-def _create_box_plot_axis(ax: plt.Axes, data, violin: Optional[bool] = False) -> plt.Axes:
+def _create_box_plot_axis(ax: plt.Axes, data, violin = False) -> plt.Axes:
     '''
 
     :param ax: a matplotlib.pyplot.Axes to plot to

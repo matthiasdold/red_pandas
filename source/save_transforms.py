@@ -2,7 +2,6 @@
 # "Save" is to be understood as not dropping any  'nan' values while grouping etc.
 import numpy as np
 
-
 def sgroupby(df, grp_dims, fill_nans=True, **kwargs):
     '''
 
@@ -13,7 +12,6 @@ def sgroupby(df, grp_dims, fill_nans=True, **kwargs):
     :return:
         grouped data frame
     '''
-
 
     # also offer the possibility to just pass a string as grp_dims
     if type(grp_dims) == str:
@@ -28,23 +26,36 @@ def sgroupby(df, grp_dims, fill_nans=True, **kwargs):
 
 
     # replace nan values depending on data type
-    if nan_cols != []:
+    if nan_cols != [] and fill_nans:
         print("Continue with filling nans with 'nan' or 0 in a copy")
         replace_map = {}
 
         for c in nan_cols:
+            print("Looping on: {}".format(c))
             replace_map[c] = df[c].isna()
             if df[c].dtype in ['int32', 'int64', 'float']:
-                df[c].fillna(0)
+                print("Replaced nans in column {} with 0".format(c))
+                df[c] = df[c].fillna(0)
             else:
-                df[c].fillna('nan')
+                print("Replaced nans in column {} with nan".format(c))
+                df[c] = df[c].fillna('nan')
 
         dfg = df.groupby(grp_dims, **kwargs)
     else:
         dfg =  df.groupby(grp_dims, **kwargs)
 
     # replace to normal
-    for c in replace_map.keys():
-        df.loc[replace_map[c], c] = np.nan
+    #for c in replace_map.keys():
+    #   df.loc[replace_map[c], c] = np.nan
 
     return dfg
+
+
+
+if __name__ == '__main__':
+    import pandas as pd
+
+    df = pd.DataFrame({'A': ['a', 'b', 'a', np.nan],
+                       'B': [1, 2, 3, 4]})
+
+    dt = sgroupby(df, 'A')['B'].sum()
